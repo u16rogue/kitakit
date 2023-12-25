@@ -21,6 +21,8 @@ add_library(imgui STATIC
   "${imgui_SOURCE_DIR}/imstb_truetype.h"
   "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h"
   "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp"
+  "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h"
+  "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
 )
 
 target_include_directories(imgui

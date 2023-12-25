@@ -15,6 +15,8 @@ project(kitakit)
 add_library(${PROJECT_NAME} STATIC
   "include/kitakit/kitakit.hh"
   "src/kitakit.cc"
+  "include/kitakit/kk_imgui.hh"
+  "src/kk_imgui.cc"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -26,5 +28,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  PUBLIC imgui
+  PUBLIC metapp imgui
 )
+
+kk_target_pedantic(${PROJECT_NAME})
