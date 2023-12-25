@@ -28,7 +28,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  PUBLIC metapp imgui
+  PUBLIC metapp imgui glfw
 )
 
 kk_target_pedantic(${PROJECT_NAME})

@@ -121,6 +121,11 @@ auto kitakit::Instance::create(int width, int height, const char * title, Create
     title = "window";
   }
 
+  CreateExtended __ex {};
+  if (!extended) {
+    extended = &__ex;
+  }
+
   bool failed = true;
 
   if (!glfwInit()) {
@@ -150,7 +155,7 @@ auto kitakit::Instance::create(int width, int height, const char * title, Create
   };
 
   glfwMakeContextCurrent(window);
-  glfwSwapInterval(1);
+  glfwSwapInterval(extended->swap_interval);
 
   #define _load_import(fn)                                                \
     if (!kk_##fn) {                                                       \
@@ -178,7 +183,7 @@ auto kitakit::Instance::create(int width, int height, const char * title, Create
 
   ImGuiIO & io = ImGui::GetIO();
   io.LogFilename = nullptr;
-  io.IniFilename = (extended ? extended->inifile : nullptr);
+  io.IniFilename = extended->inifile;
 
   if (!ImGui_ImplGlfw_InitForOpenGL(window, true)) {
     return CreateResponse::IMGUI_GLFW;

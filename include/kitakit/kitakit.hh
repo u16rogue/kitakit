@@ -21,7 +21,11 @@ class Instance;
 using CreateResult = mpp::Result<Instance, CreateResponse>;
 
 struct CreateExtended {
+  // Default: nullptr - No ini file.
   const char * inifile = nullptr;
+
+  // Default: 1 - Enable VSync
+  int swap_interval = 1;
 };
 
 //------------------------------------------------------------------------------
