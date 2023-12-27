@@ -109,7 +109,7 @@ public:
   auto get_wsize_cache(int & width, int & height) -> void;
 
 public: 
-  static auto create(int width, int height, const char * title = nullptr, CreateExtended * extended = nullptr) -> CreateResult; 
+  static auto create(int width, int height, const char * title = nullptr, CreateExtended * extended = nullptr) -> CreateResult;
 
   template <typename... Callbacks>
   static auto create(int width, int height, const char * title = {}, CreateExtended * extended = nullptr, Callbacks... callbacks) -> CreateResult {
@@ -132,6 +132,24 @@ private:
   CallbackKey       * cb_key       = nullptr;
   CallbackClose     * cb_close     = nullptr;
 };
+
+//------------------------------------------------------------------------------
+
+enum class RunResponse {
+  SUCCESS,
+  FAILURE,
+};
+
+template <typename... Callbacks>
+auto run(int width, int height, const char * title = nullptr, CreateExtended * extended = nullptr, Callbacks... callbacks) -> RunResponse {
+  auto result = Instance::create(width, height, title, extended, callbacks...);
+  if (!result) {
+    return RunResponse::FAILURE;
+  }
+  result->run();
+  Instance::destroy(result);
+  return RunResponse::SUCCESS;
+}
 
 //------------------------------------------------------------------------------
 
