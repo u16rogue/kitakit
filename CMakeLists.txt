@@ -15,6 +15,8 @@ project(kitakit)
 add_library(${PROJECT_NAME} STATIC
   "include/kitakit/kitakit.hh"
   "src/kitakit.cc"
+
+  "include/kitakit/kk_kit.hh"
   "include/kitakit/kk_imgui.hh"
   "src/kk_imgui.cc"
 )

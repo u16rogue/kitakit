@@ -36,6 +36,14 @@ auto kitakit::Instance::get_wsize_cache(int & width, int & height) -> void {
   height = cache_height;
 }
 
+auto kitakit::Instance::hide() -> void {
+  glfwHideWindow(_window);
+}
+
+auto kitakit::Instance::show() -> void {
+  glfwShowWindow(_window);
+}
+
 auto kitakit::Instance::callback(CallbackRender * callback) -> Instance& {
   if (valid()) { cb_render = callback; }
   return *this;
@@ -59,7 +67,7 @@ auto kitakit::Instance::callback(CallbackClose * callback) -> Instance& {
 auto kitakit::Instance::draw() -> void {
   if (cb_prerender) {
     EventPreRender e_prerender = {
-      .instance = this,
+      .instance = *this,
       .skip = false,
     };
     cb_prerender(e_prerender);
@@ -73,7 +81,7 @@ auto kitakit::Instance::draw() -> void {
   ImGui::NewFrame();
 
   EventRender e_render = {
-    .instance = this,
+    .instance = *this,
   };
   cb_render(e_render);
 
@@ -86,12 +94,21 @@ auto kitakit::Instance::draw() -> void {
   glfwSwapBuffers(_window);
 }
 
-auto kitakit::Instance::polled_draw() -> bool {
-  glfwPollEvents();
+auto kitakit::Instance::event_draw() -> bool {
+  switch(event) {
+    case GLFWEvent::WAIT:
+      glfwWaitEvents();
+      break;
+    case GLFWEvent::POLL:
+      glfwPollEvents();
+      break;
+    default:
+      return false;
+  }
   if (glfwWindowShouldClose(_window)) {
     if (cb_close) {
       EventClose e_close = {
-        .instance = this,
+        .instance = *this,
         .cancel   = false,
       };
       cb_close(e_close);
@@ -108,7 +125,7 @@ auto kitakit::Instance::polled_draw() -> bool {
 auto kitakit::Instance::run(RunFrame nframes) -> void {
   if (!valid() || !cb_render) { return; }
   glfwShowWindow(_window);
-  while (polled_draw()) {
+  while (event_draw()) {
     if (nframes != FOREVER && --nframes == 0) {
       return; 
     }
@@ -138,10 +155,12 @@ auto kitakit::Instance::create(int width, int height, const char * title, Create
     }
   };
 
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-  glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
   glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
+  // Opts
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, extended->glfw_major);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, extended->glfw_minor);
+  glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, extended->transparent_frame);
 
   GLFWwindow * window = glfwCreateWindow(width, height, title, nullptr, nullptr);
   if (!window) {
@@ -206,7 +225,9 @@ auto kitakit::Instance::create(int width, int height, const char * title, Create
   };
 
   failed = false;
-  return window;
+  auto res = Instance(window);
+  res.event = extended->event_management;
+  return res;
 }
 
 auto kitakit::Instance::destroy(Instance & instance) -> DestroyResponse {
@@ -229,6 +250,10 @@ auto kitakit::Instance::destroy(CreateResult & instance) -> DestroyResponse {
   }
 
   return destroy(*instance);
+}
+
+auto kitakit::notify() -> void {
+  glfwPostEmptyEvent();
 }
 
 #undef _window

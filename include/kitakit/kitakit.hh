@@ -20,12 +20,28 @@ enum class CreateResponse {
 class Instance;
 using CreateResult = mpp::Result<Instance, CreateResponse>;
 
+enum class GLFWEvent {
+  INVALID,
+  WAIT,
+  POLL,
+};
+
 struct CreateExtended {
   // Default: nullptr - No ini file.
   const char * inifile = nullptr;
 
   // Default: 1 - Enable VSync
   int swap_interval = 1;
+
+  //
+  int glfw_major = 3; // GLFW_CONTEXT_VERSION_MAJOR
+  int glfw_minor = 0; // GLFW_CONTEXT_VERSION_MINOR
+
+  //
+  bool transparent_frame = true; // GLFW_TRANSPARENT_FRAMEBUFFER
+
+  //
+  GLFWEvent event_management = GLFWEvent::WAIT;
 };
 
 //------------------------------------------------------------------------------
@@ -43,7 +59,7 @@ enum class DestroyResponse {
  *
  */
 struct EventRender {
-  Instance * instance;
+  Instance & instance;
 };
 using CallbackRender = void(EventRender&);
 
@@ -51,7 +67,7 @@ using CallbackRender = void(EventRender&);
  *
  */
 struct EventPreRender {
-  Instance * instance;
+  Instance & instance;
   bool skip;
 };
 using CallbackPreRender = void(EventPreRender&);
@@ -60,7 +76,7 @@ using CallbackPreRender = void(EventPreRender&);
  *
  */
 struct EventKey {
-  Instance * instance;
+  Instance & instance;
 };
 using CallbackKey = void(EventKey&);
 
@@ -68,7 +84,7 @@ using CallbackKey = void(EventKey&);
  *
  */
 struct EventClose {
-  Instance * instance;
+  Instance & instance;
   bool cancel;
 };
 using CallbackClose = void(EventClose&);
@@ -96,7 +112,7 @@ public:
 
 private:
   auto draw() -> void;
-  auto polled_draw() -> bool;
+  auto event_draw() -> bool;
 
 public:
   auto run(RunFrame nframes = FOREVER) -> void;
@@ -107,6 +123,9 @@ public:
 
   auto get_window() const noexcept -> void*;
   auto get_wsize_cache(int & width, int & height) -> void;
+
+  auto hide() -> void;
+  auto show() -> void;
 
 public: 
   static auto create(int width, int height, const char * title = nullptr, CreateExtended * extended = nullptr) -> CreateResult;
@@ -127,6 +146,8 @@ private:
   void * window = nullptr;
   int cache_width = 0, cache_height = 0;
 
+  GLFWEvent event = GLFWEvent::INVALID;
+
   CallbackRender    * cb_render    = nullptr;
   CallbackPreRender * cb_prerender = nullptr;
   CallbackKey       * cb_key       = nullptr;
@@ -135,11 +156,22 @@ private:
 
 //------------------------------------------------------------------------------
 
+/*
+ *  Notifies the event system to render a frame when `event_management` is
+ *  set to `WAIT`
+ */
+auto notify() -> void;
+
+//------------------------------------------------------------------------------
+
 enum class RunResponse {
   SUCCESS,
   FAILURE,
 };
 
+/*
+ *  Immidiately create and run a kitakit instance
+ */
 template <typename... Callbacks>
 auto run(int width, int height, const char * title = nullptr, CreateExtended * extended = nullptr, Callbacks... callbacks) -> RunResponse {
   auto result = Instance::create(width, height, title, extended, callbacks...);
