@@ -14,23 +14,31 @@ target_link_libraries(yourproject PRIVATE kitakit)
 ```c++
 #include <kitakit/kitakit.hh>
 #include <kitakit/kk_imgui.hh>
+#include <kitakit/kk_kit.hh>
 
 auto main(int, char**) -> int {
-  kitakit::CreateResult window = kitakit::Instance::create(300, 600, "my app", nullptr,
-    [](kitakit::EventRender & e) {
-      ImGui::kk_BeginFilled(e, "##window");
-      ImGui::Text("Hello World");
-      ImGui::End();
+  kitakit::run(300, 600, "hello world", nullptr,
+  [](kitakit::EventClose & e) {
+    e.cancel = true;
+    e.instance.hide();
+  },
+  [](kitakit::EventRender & e) {
+    ImGui::kk_BeginFilled(e, "##window");
+    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+
+    static kitakit::AsyncTask<void> task; 
+    if (ImGui::Button("heavy task") && !task) task = [] { 
+      std::this_thread::sleep_for(std::chrono::seconds(2));
+      kitakit::notify();
+    };
+
+    if (task) {
+      ImGui::Text("working");
     }
-  );
 
-  if (!window) {
-    return (int)window.why();
-  }
+    ImGui::End();
+  });
 
-  window->run();
-
-  kitakit::Instance::destroy(window);
   return 0;
 }
 ```
