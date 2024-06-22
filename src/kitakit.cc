@@ -204,6 +204,10 @@ auto kitakit::Instance::create(int width, int height, const char * title, Create
   io.LogFilename = nullptr;
   io.IniFilename = extended->inifile;
 
+#if defined(KK_IMGUI_DOCKING)
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+#endif
+
   if (!ImGui_ImplGlfw_InitForOpenGL(window, true)) {
     return CreateResponse::IMGUI_GLFW;
   }

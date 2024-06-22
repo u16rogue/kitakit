@@ -10,6 +10,11 @@ target_link_libraries(yourproject PRIVATE kitakit)
 ```
 *This will automatically resolve all the dependencies needed. If you want to provide your own just make sure the target dependency is available before loading kitakit.*
 
+### Options
+* `KK_IMGUI_DOCKING` - Uses the docking branch of ImGui.
+> [!CAUTION]
+> Due to being a branch only feature this will use the latest commit on the `docking` branch of ImGui.
+
 ### Example
 ```c++
 #include <kitakit/kitakit.hh>
@@ -50,8 +55,8 @@ auto main(int, char**) -> int {
 * Key
 
 ### Libraries
-* [metapp](https://github.com/u16rogue/metapp)
-* [ImGui](https://github.com/ocornut/imgui)
-* [GLFW](https://github.com/glfw/glfw)
+* [metapp](https://github.com/u16rogue/metapp) @ 0.6
+* [ImGui](https://github.com/ocornut/imgui) @ 1.90 / docking
+* [GLFW](https://github.com/glfw/glfw) @ 3.3.9
 
 ### License

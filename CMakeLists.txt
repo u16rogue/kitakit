@@ -1,14 +1,27 @@
 cmake_minimum_required(VERSION 3.18)
 
-include("utils.cmake")
+include("cmake/rut.cmake")
+RUTLoadCPM()
 
-message("-- kitakit > Loading CPM...")
-kk_load_cpm()
+#-------------------------------------------------------------------------------
+
+macro (_KKLoadDependency target)
+  if (NOT TARGET ${target})
+    message("-- kitakit > ${target} is not an available target!
+    Automatically resolving dependency...")
+    add_subdirectory("deps/${target}/")
+  else()
+    message("-- kitakit > ${target} target available. Using already existing
+    target and skipping dependency resolution!")
+  endif()
+endmacro()
+
+#-------------------------------------------------------------------------------
 
 message("-- kitakit > Loading dependencies...")
-kk_load_dependency(metapp)
-kk_load_dependency(glfw)
-kk_load_dependency(imgui)
+_KKLoadDependency(metapp)
+_KKLoadDependency(glfw)
+_KKLoadDependency(imgui)
 
 project(kitakit)
 
@@ -33,4 +46,4 @@ target_link_libraries(${PROJECT_NAME}
   PUBLIC metapp imgui glfw
 )
 
-kk_target_pedantic(${PROJECT_NAME})
+RUTTargetPedantic(${PROJECT_NAME})
