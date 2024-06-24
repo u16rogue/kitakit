@@ -4,14 +4,14 @@ Crossplatform GUI library powered by GLFW and ImGui (Improved and revised [kita]
 ### Usage
 * With [CPM](https://github.com/cpm-cmake/CPM.cmake). Check the repository's [tags](https://github.com/u16rogue/kitakit/tags) for a specific or the latest version.
 ```CMake
-CPMAddPackage("gh:u16rogue/kitakit@<tag>") # ex: CPMAddPackage("gh:u16rogue/kitakit@0.1.0")
+CPMAddPackage("gh:u16rogue/kitakit@<tag>") # ex: CPMAddPackage("gh:u16rogue/kitakit@0.2.0")
 #...
 target_link_libraries(yourproject PRIVATE kitakit)
 ```
 *This will automatically resolve all the dependencies needed. If you want to provide your own just make sure the target dependency is available before loading kitakit.*
 
-### Options
-* `KK_IMGUI_DOCKING` - Uses the docking branch of ImGui.
+### Build Options
+* `KITAKIT_IMGUI_DOCKING` - Configure ImGui to be docking aware. Will also automatically load the docking branch of ImGui if no ImGui target is present. (Auto Load)
 > [!CAUTION]
 > Due to being a branch only feature this will use the latest commit on the `docking` branch of ImGui.
 

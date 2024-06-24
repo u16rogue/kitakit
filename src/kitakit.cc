@@ -5,7 +5,6 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include <string>
 #include <cstdlib>
 
 static decltype(glViewport)   * kk_glViewport   = nullptr;
@@ -204,7 +203,7 @@ auto kitakit::Instance::create(int width, int height, const char * title, Create
   io.LogFilename = nullptr;
   io.IniFilename = extended->inifile;
 
-#if defined(KK_IMGUI_DOCKING)
+#if defined(KITAKIT_IMGUI_DOCKING)
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 #endif
 

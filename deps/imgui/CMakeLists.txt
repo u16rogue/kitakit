@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
-option(KK_IMGUI_DOCKING "Use the docking branch of ImGui - WARNING WILL USE LATEST COMMIT" OFF)
-
 message("-- kitakit > imgui > Loading package via CPM...")
-if (KK_IMGUI_DOCKING)
+if (KITAKIT_IMGUI_DOCKING)
   CPMAddPackage(
     NAME imgui
     GITHUB_REPOSITORY ocornut/imgui
@@ -45,7 +43,3 @@ target_include_directories(imgui
 target_link_libraries(imgui
   PUBLIC glfw
 )
-
-if (KK_IMGUI_DOCKING)
-  target_compile_definitions(imgui PUBLIC KK_IMGUI_DOCKING=1)
-endif()

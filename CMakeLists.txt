@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.18)
 
+option(KITAKIT_IMGUI_DOCKING "Configure ImGui to be docking mode aware - WARNING WILL USE LATEST COMMIT IF DEFAULT TARGET" 0)
+
+#-------------------------------------------------------------------------------
+
 include("cmake/rut.cmake")
 RUTLoadCPM()
 
@@ -12,7 +16,7 @@ macro (_KKLoadDependency target)
     add_subdirectory("deps/${target}/")
   else()
     message("-- kitakit > ${target} target available. Using already existing
-    target and skipping dependency resolution!")
+    target and skipping dependency resolution.")
   endif()
 endmacro()
 
@@ -45,5 +49,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   PUBLIC metapp imgui glfw
 )
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC $<$<BOOL:${KITAKIT_IMGUI_DOCKING}>:KITAKIT_IMGUI_DOCKING=1>)
 
 RUTTargetPedantic(${PROJECT_NAME})
