@@ -75,6 +75,14 @@ using CallbackPreRender = void(EventPreRender&);
 /*
  *
  */
+struct EventPostRender {
+  Instance & instance;
+};
+using CallbackPostRender = void(EventPostRender&);
+
+/*
+ *
+ */
 struct EventKey {
   Instance & instance;
 };
@@ -101,6 +109,7 @@ public:
 public: 
   auto callback(CallbackRender * callback) -> Instance&;
   auto callback(CallbackPreRender * callback) -> Instance&;
+  auto callback(CallbackPostRender * callback) -> Instance&;
   auto callback(CallbackKey * callback) -> Instance&;
   auto callback(CallbackClose * callback) -> Instance&;
 
@@ -148,10 +157,11 @@ private:
 
   GLFWEvent event = GLFWEvent::INVALID;
 
-  CallbackRender    * cb_render    = nullptr;
-  CallbackPreRender * cb_prerender = nullptr;
-  CallbackKey       * cb_key       = nullptr;
-  CallbackClose     * cb_close     = nullptr;
+  CallbackRender     * cb_render     = nullptr;
+  CallbackPreRender  * cb_prerender  = nullptr;
+  CallbackPostRender * cb_postrender = nullptr;
+  CallbackKey        * cb_key        = nullptr;
+  CallbackClose      * cb_close      = nullptr;
 };
 
 //------------------------------------------------------------------------------

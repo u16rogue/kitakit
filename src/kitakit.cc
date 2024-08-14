@@ -53,6 +53,11 @@ auto kitakit::Instance::callback(CallbackPreRender * callback) -> Instance& {
   return *this;
 }
 
+auto kitakit::Instance::callback(CallbackPostRender * callback) -> Instance& {
+  if (valid()) { cb_postrender = callback; }
+  return *this;
+}
+
 auto kitakit::Instance::callback(CallbackKey * callback) -> Instance& {
   if (valid()) { cb_key = callback; }
   return *this;
@@ -91,6 +96,11 @@ auto kitakit::Instance::draw() -> void {
   kk_glClear(GL_COLOR_BUFFER_BIT);
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   glfwSwapBuffers(_window);
+
+  if (cb_postrender) {
+    EventPostRender e_postrender = { .instance = *this };
+    cb_postrender(e_postrender);
+  }
 }
 
 auto kitakit::Instance::event_draw() -> bool {

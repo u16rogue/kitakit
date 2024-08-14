@@ -4,7 +4,7 @@ Crossplatform GUI library powered by GLFW and ImGui (Improved and revised [kita]
 ### Usage
 * With [CPM](https://github.com/cpm-cmake/CPM.cmake). Check the repository's [tags](https://github.com/u16rogue/kitakit/tags) for a specific or the latest version.
 ```CMake
-CPMAddPackage("gh:u16rogue/kitakit@<tag>") # ex: CPMAddPackage("gh:u16rogue/kitakit@0.2.0")
+CPMAddPackage("gh:u16rogue/kitakit@<tag>") # ex: CPMAddPackage("gh:u16rogue/kitakit@0.3.0")
 #...
 target_link_libraries(yourproject PRIVATE kitakit)
 ```
@@ -51,6 +51,7 @@ auto main(int, char**) -> int {
 ### Events
 * Render
 * Pre Render
+* Post Render
 * Close
 * Key
 
